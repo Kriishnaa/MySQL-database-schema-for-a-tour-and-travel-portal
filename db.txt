@@ -1,0 +1,139 @@
+Database schema for a tour and travel portal in MySQL, designed in a proper tabular format with naming conventions. The schema includes tables for users, tours, bookings, payments, reviews, and more.
+
+### 1. `users` Table
+| Column Name      | Data Type        | Constraints              | Description                   |
+|------------------|------------------|--------------------------|-------------------------------|
+| `user_id`        | INT              | PRIMARY KEY, AUTO_INCREMENT | Unique identifier for each user |
+| `username`       | VARCHAR(50)      | NOT NULL, UNIQUE         | Username for user login       |
+| `password`       | VARCHAR(255)     | NOT NULL                 | Password for user login       |
+| `email`          | VARCHAR(100)     | NOT NULL, UNIQUE         | User's email address          |
+| `first_name`     | VARCHAR(50)      | NOT NULL                 | User's first name             |
+| `last_name`      | VARCHAR(50)      | NOT NULL                 | User's last name              |
+| `phone`          | VARCHAR(15)      |                          | User's phone number           |
+| `created_at`     | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP| Timestamp when the user was created |
+
+### 2. `tours` Table
+| Column Name      | Data Type        | Constraints              | Description                   |
+|------------------|------------------|--------------------------|-------------------------------|
+| `tour_id`        | INT              | PRIMARY KEY, AUTO_INCREMENT | Unique identifier for each tour |
+| `title`          | VARCHAR(100)     | NOT NULL                 | Title of the tour             |
+| `description`    | TEXT             |                          | Description of the tour       |
+| `location`       | VARCHAR(100)     | NOT NULL                 | Location of the tour          |
+| `price`          | DECIMAL(10, 2)   | NOT NULL                 | Price of the tour             |
+| `duration`       | INT              | NOT NULL                 | Duration of the tour in days  |
+| `created_at`     | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP| Timestamp when the tour was created |
+
+### 3. `bookings` Table
+| Column Name      | Data Type        | Constraints              | Description                   |
+|------------------|------------------|--------------------------|-------------------------------|
+| `booking_id`     | INT              | PRIMARY KEY, AUTO_INCREMENT | Unique identifier for each booking |
+| `user_id`        | INT              | NOT NULL, FOREIGN KEY (references `users(user_id)`) | ID of the user who made the booking |
+| `tour_id`        | INT              | NOT NULL, FOREIGN KEY (references `tours(tour_id)`) | ID of the booked tour         |
+| `booking_date`   | DATE             | NOT NULL                 | Date of booking               |
+| `status`         | VARCHAR(20)      | NOT NULL                 | Status of the booking (e.g., confirmed, canceled) |
+| `created_at`     | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP| Timestamp when the booking was created |
+
+### 4. `payments` Table
+| Column Name      | Data Type        | Constraints              | Description                   |
+|------------------|------------------|--------------------------|-------------------------------|
+| `payment_id`     | INT              | PRIMARY KEY, AUTO_INCREMENT | Unique identifier for each payment |
+| `booking_id`     | INT              | NOT NULL, FOREIGN KEY (references `bookings(booking_id)`) | ID of the related booking     |
+| `amount`         | DECIMAL(10, 2)   | NOT NULL                 | Amount paid                   |
+| `payment_date`   | DATE             | NOT NULL                 | Date of payment               |
+| `payment_method` | VARCHAR(50)      | NOT NULL                 | Method of payment (e.g., credit card, PayPal) |
+| `status`         | VARCHAR(20)      | NOT NULL                 | Status of the payment (e.g., completed, pending) |
+| `created_at`     | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP| Timestamp when the payment was created |
+
+### 5. `reviews` Table
+| Column Name      | Data Type        | Constraints              | Description                   |
+|------------------|------------------|--------------------------|-------------------------------|
+| `review_id`      | INT              | PRIMARY KEY, AUTO_INCREMENT | Unique identifier for each review |
+| `user_id`        | INT              | NOT NULL, FOREIGN KEY (references `users(user_id)`) | ID of the user who wrote the review |
+| `tour_id`        | INT              | NOT NULL, FOREIGN KEY (references `tours(tour_id)`) | ID of the reviewed tour       |
+| `rating`         | INT              | NOT NULL                 | Rating given by the user (1-5) |
+| `comment`        | TEXT             |                          | Review comment                |
+| `created_at`     | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP| Timestamp when the review was created |
+
+### 6. `tour_images` Table
+| Column Name      | Data Type        | Constraints              | Description                   |
+|------------------|------------------|--------------------------|-------------------------------|
+| `image_id`       | INT              | PRIMARY KEY, AUTO_INCREMENT | Unique identifier for each image |
+| `tour_id`        | INT              | NOT NULL, FOREIGN KEY (references `tours(tour_id)`) | ID of the related tour        |
+| `image_url`      | VARCHAR(255)     | NOT NULL                 | URL of the image              |
+| `created_at`     | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP| Timestamp when the image was added |
+
+### 7. `tour_schedules` Table
+| Column Name      | Data Type        | Constraints              | Description                   |
+|------------------|------------------|--------------------------|-------------------------------|
+| `schedule_id`    | INT              | PRIMARY KEY, AUTO_INCREMENT | Unique identifier for each schedule |
+| `tour_id`        | INT              | NOT NULL, FOREIGN KEY (references `tours(tour_id)`) | ID of the related tour        |
+| `start_date`     | DATE             | NOT NULL                 | Start date of the tour        |
+| `end_date`       | DATE             | NOT NULL                 | End date of the tour          |
+| `availability`   | INT              | NOT NULL                 | Number of available slots     |
+| `created_at`     | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP| Timestamp when the schedule was created |
+
+### 8. `tour_guides` Table
+| Column Name      | Data Type        | Constraints              | Description                   |
+|------------------|------------------|--------------------------|-------------------------------|
+| `guide_id`       | INT              | PRIMARY KEY, AUTO_INCREMENT | Unique identifier for each guide |
+| `first_name`     | VARCHAR(50)      | NOT NULL                 | Guide's first name            |
+| `last_name`      | VARCHAR(50)      | NOT NULL                 | Guide's last name             |
+| `phone`          | VARCHAR(15)      |                          | Guide's phone number          |
+| `email`          | VARCHAR(100)     |                          | Guide's email address         |
+| `created_at`     | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP| Timestamp when the guide was created |
+
+### 9. `tour_guide_assignments` Table
+| Column Name      | Data Type        | Constraints              | Description                   |
+|------------------|------------------|--------------------------|-------------------------------|
+| `assignment_id`  | INT              | PRIMARY KEY, AUTO_INCREMENT | Unique identifier for each assignment |
+| `schedule_id`    | INT              | NOT NULL, FOREIGN KEY (references `tour_schedules(schedule_id)`) | ID of the related schedule    |
+| `guide_id`       | INT              | NOT NULL, FOREIGN KEY (references `tour_guides(guide_id)`) | ID of the assigned guide      |
+| `created_at`     | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP| Timestamp when the assignment was created |
+
+### 10. `countries` Table
+| Column Name      | Data Type        | Constraints              | Description                   |
+|------------------|------------------|--------------------------|-------------------------------|
+| `country_id`     | INT              | PRIMARY KEY, AUTO_INCREMENT | Unique identifier for each country |
+| `country_name`   | VARCHAR(100)     | NOT NULL, UNIQUE         | Name of the country           |
+| `created_at`     | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP| Timestamp when the country was added |
+
+### 11. `cities` Table
+| Column Name      | Data Type        | Constraints              | Description                   |
+|------------------|------------------|--------------------------|-------------------------------|
+| `city_id`        | INT              | PRIMARY KEY, AUTO_INCREMENT | Unique identifier for each city |
+| `country_id`     | INT              | NOT NULL, FOREIGN KEY (references `countries(country_id)`) | ID of the related country     |
+| `city_name`      | VARCHAR(100)     | NOT NULL                 | Name of the city              |
+| `created_at`     | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP| Timestamp when the city was added |
+
+### 12. `user_roles` Table
+| Column Name      | Data Type        | Constraints              | Description                   |
+|------------------|------------------|--------------------------|-------------------------------|
+| `role_id`        | INT              | PRIMARY KEY, AUTO_INCREMENT | Unique identifier for each role |
+| `role_name`      | VARCHAR(50)      | NOT NULL, UNIQUE         | Name of the role              |
+| `created_at`     | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP| Timestamp when the role was added |
+
+### 13. `user_role_assignments` Table
+
+
+| Column Name      | Data Type        | Constraints              | Description                   |
+|------------------|------------------|--------------------------|-------------------------------|
+| `assignment_id`  | INT              | PRIMARY KEY, AUTO_INCREMENT | Unique identifier for each assignment |
+| `user_id`        | INT              | NOT NULL, FOREIGN KEY (references `users(user_id)`) | ID of the related user        |
+| `role_id`        | INT              | NOT NULL, FOREIGN KEY (references `user_roles(role_id)`) | ID of the assigned role       |
+| `created_at`     | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP| Timestamp when the assignment was created |
+
+### 14. `tour_categories` Table
+| Column Name      | Data Type        | Constraints              | Description                   |
+|------------------|------------------|--------------------------|-------------------------------|
+| `category_id`    | INT              | PRIMARY KEY, AUTO_INCREMENT | Unique identifier for each category |
+| `category_name`  | VARCHAR(100)     | NOT NULL, UNIQUE         | Name of the category          |
+| `created_at`     | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP| Timestamp when the category was added |
+
+### 15. `tour_category_assignments` Table
+| Column Name      | Data Type        | Constraints              | Description                   |
+|------------------|------------------|--------------------------|-------------------------------|
+| `assignment_id`  | INT              | PRIMARY KEY, AUTO_INCREMENT | Unique identifier for each assignment |
+| `tour_id`        | INT              | NOT NULL, FOREIGN KEY (references `tours(tour_id)`) | ID of the related tour        |
+| `category_id`    | INT              | NOT NULL, FOREIGN KEY (references `tour_categories(category_id)`) | ID of the assigned category   |
+| `created_at`     | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP| Timestamp when the assignment was created |
+

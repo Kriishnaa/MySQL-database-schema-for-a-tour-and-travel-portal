@@ -1,0 +1,1 @@
+# MySQL-database-schema-for-a-tour-and-travel-portal
